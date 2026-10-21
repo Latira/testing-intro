@@ -30,10 +30,30 @@ function changeQuantity(cart, productID, newQuantity) {
     }
   }
   return cart; }
-  
-function removeFromCart() { return notImplemented(); }
-function calculateCartSubtotal() { return notImplemented(); }
-function calculateOrderTotal() { return notImplemented(); }
+
+function removeFromCart(cart, productID) { 
+  return cart.filter(item => item.id !== productID); }
+
+function calculateCartSubtotal(cart) { 
+  let cartSubtotal = 0; 
+  for (const item of cart) {
+    cartSubtotal += item.price*item.quantity;
+  }
+  return cartSubtotal; }
+
+function calculateOrderTotal(cart, promocode) { 
+  let orderTotal = {};
+  orderTotal.subtotal = calculateCartSubtotal(cart);
+  orderTotal.discount = 0;
+  orderTotal.delivery = 30000;
+  if (promocode === 'SAVE10' && orderTotal.subtotal >= 20000) {
+    orderTotal.discount = Math.round(orderTotal.subtotal*0.1);
+  }
+  if (orderTotal.subtotal >= 50000) {
+    orderTotal.delivery = 0;
+  }
+  orderTotal.total = orderTotal.subtotal - orderTotal.discount + orderTotal.delivery;
+  return orderTotal; }
 
 const cartApi = { addToCart, changeQuantity, removeFromCart, calculateCartSubtotal, calculateOrderTotal };
 
